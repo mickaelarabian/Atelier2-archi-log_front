@@ -17,8 +17,10 @@ function register() {
     const POST_ASI_URL = 'http://localhost:8080/register'
 
     fetch(POST_ASI_URL, context)
-        .then(response => response.text())
-        .then(result => callbackUserRegister(result))
+        // .then(response => response.text())
+        .then(response => response.json()
+        .then(data => callbackUserRegister({ status: response.status, response: data })))
+        // .then(result => callbackUserRegister(result))
         .catch(error => console.log('error', error));
 
 }
@@ -40,20 +42,31 @@ function login() {
     };
 
     fetch("http://localhost:8080/login", context)
-        .then(response => response.text())
-        .then(result => callbackUserLogin(result))
+        .then(response => response.json()
+            // .then(data => ({ status: response.status, response: data.response }))
+            .then(data => callbackUserLogin({ status: response.status, response: data })))
         .catch(error => console.log('error', error));
 
 }
 
 function callbackUserLogin(response) {
-    console.log('login',response)
-    if(response !== -1){
-        localStorage.setItem('archi_user', response)
+    console.log('login', response)
+    if (response.status === 200) {
+        localStorage.setItem('archi_user', response.response)
         window.location = '/dashboard.html'
+    } else {
+        console.log('aie', response.response.message)
+        let error = document.querySelector('#error');
+        error.innerHTML = response.response.message;
     }
 }
 
 function callbackUserRegister(response) {
-    window.location = '/login.html'
+    if (response.status === 200) {
+        window.location = '/'
+    } else {
+        console.log('aie', response.response.message)
+        let error = document.querySelector('#error');
+        error.innerHTML = response.response.message;
+    }
 }

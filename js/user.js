@@ -1,6 +1,6 @@
 function getUserInfos() {
     const userId = localStorage.getItem('archi_user')
-    const GET_CARD_URL = `http://localhost:8080/users/${userId}`;
+    const GET_CARD_URL = `http://localhost:8080/user/${userId}`;
     let context = {
         method: 'GET'
     };
